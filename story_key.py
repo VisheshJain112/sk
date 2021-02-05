@@ -178,6 +178,7 @@ class application_window():
             print("Succesfully Scanned")
             self.test_sheet = self.test_sheet.rstrip()
             self.test_sheet = self.test_sheet.lstrip()
+            self.get_sequence_data()
             self.story_logic_sheet = self.story_logic_sheet.rstrip()
             self.story_logic_sheet = self.story_logic_sheet.lstrip()
 
@@ -442,6 +443,12 @@ class application_window():
         else:
           new_arr.append(br)
       return new_arr
+
+
+    def get_sequence_data(self):
+      for idx,row in self.total_df.iterrows():
+        self.struct_dict[row.Sequence] = row['Sub-feature']
+
 
     def get_data_logic(self):
 
