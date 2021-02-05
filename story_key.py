@@ -447,7 +447,7 @@ class application_window():
 
     def get_sequence_data(self):
       for idx,row in self.total_df.iterrows():
-        self.struct_dict[row.Sequence] = row['Sub-feature']
+        self.struct_dict[str("data_" + row.Sequence)] = row['Sub-feature']
 
 
     def get_data_logic(self):
