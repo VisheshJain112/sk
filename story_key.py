@@ -26,6 +26,7 @@ from sentence_splitter import SentenceSplitter, split_text_into_sentences
 from gingerit.gingerit import GingerIt
 from os import curdir
 import collections
+import inflect
 import tkinter.font as tkFont
 # Designing window for registration
 
@@ -178,7 +179,8 @@ class application_window():
             print("Succesfully Scanned")
             self.test_sheet = self.test_sheet.rstrip()
             self.test_sheet = self.test_sheet.lstrip()
-            self.get_sequence_data()
+          
+
             self.story_logic_sheet = self.story_logic_sheet.rstrip()
             self.story_logic_sheet = self.story_logic_sheet.lstrip()
 
@@ -186,6 +188,8 @@ class application_window():
             self.df_attempt = self.pad_array(df_attempt,self.row_lim+1)
             self.get_total_df()
             self.fetch_data()
+            self.get_sequence_data()
+            self.seq_attempt()
 
             clb_sheet = self.get_clubbing_sheet()
             self.clb_sheet = self.pad_array(clb_sheet,self.row_lim+1)
@@ -293,8 +297,348 @@ class application_window():
     def get_category_9(self):
       return self.category_9
 
+    
+    def seq_attempt(self):
+      self.data_map = {}
+      attempt_sheet = self.get_attempt_sheet()
+      for idx,row in self.total_df.iterrows():
+        
+        if attempt_sheet[idx]==1:
+          if row['Sequence']!=row['Sequence']:
+            pass
+          else:
+            self.data_map[str(row['Sequence'])] = row['Sub-feature']
+
+      key_data_map = self.data_map
+      key_data_map = sorted(key_data_map)
+      #print(self.data_map)
+      keys_list = key_data_map
+      self.seq_to_index_map = {}
+      self.index_to_seq_map = {}
+      for inx,key in enumerate(keys_list):
+        self.seq_to_index_map[key] = inx
+        self.index_to_seq_map[inx] = key
 
 
+
+    def check_for_extra_logic(self,query):
+
+      if 'mul' in query[1:]: 
+        if query[0] == '<':
+          query_ls = query.split()
+          
+          if query_ls[0][1:] == "mul":
+            for inx,let in enumerate(query):
+              if let=='{':
+                inx_s = inx
+              elif let == '}':
+                inx_e = inx
+                break
+              else:
+                pass
+          text = query[inx_s+1:inx_e]
+      
+          query_new = query.split('Range')
+          query_new = query_new[-1]
+          query_new = query_new[1:len(query_new)-1]
+          #print(query_new)
+          ranges_or = []
+          ranges_and = []
+
+          for inx,let in enumerate(query_new):
+            if let == '[':
+              range_start = inx
+            elif let == ']':
+              range_end = inx
+              if ' & ' in query_new:
+                t_query = query_new[range_start+1:range_end]
+                ran_seq = t_query.split(':')
+                range_1 = ran_seq[0].rstrip()
+                range_1 = range_1.lstrip()
+                range_2 = ran_seq[1].rstrip()
+                range_2 = range_2.lstrip()
+                ranges_and.append([range_1,range_2])
+              elif ' or ' in query_new:
+                t_query = query_new[range_start+1:range_end]
+                ran_seq = t_query.split(':')
+                range_1 = ran_seq[0].rstrip()
+                range_1 = range_1.lstrip()
+                range_2 = ran_seq[1].rstrip()
+                range_2 = range_2.lstrip()
+                ranges_or.append([range_1,range_2])
+              else:
+                t_query = query_new[range_start+1:range_end]
+                ran_seq = t_query.split(':')
+                range_1 = ran_seq[0].rstrip()
+                range_1 = range_1.lstrip()
+                range_2 = ran_seq[1].rstrip()
+                range_2 = range_2.lstrip()
+                range_let = [range_1,range_2]
+            else:
+              pass
+            
+
+          if len(ranges_and)>0 :
+              sent = ""
+      
+              for ranges in ranges_and:
+                
+        
+                range_st = int(self.seq_to_index_map[ranges[0]])
+                range_en = int(self.seq_to_index_map[ranges[1]])
+            
+                for key in range(range_st,range_en + 1):
+            
+                  if self.data_map.get(self.index_to_seq_map[key])!= None:
+                    
+                    if key == range_en:
+                      sent = sent + self.data_map[self.index_to_seq_map[key]] + ' and '
+                    else:
+                      sent =  sent + self.data_map[self.index_to_seq_map[key]] + ","
+                  else:
+                    pass
+              
+
+            
+
+          elif len(ranges_or)>0 :
+              sent = ""
+      
+              for ranges in ranges_and:
+                
+        
+                range_st = int(self.seq_to_index_map[ranges[0]])
+                range_en = int(self.seq_to_index_map[ranges[1]])
+            
+                for key in range(range_st,range_en + 1):
+            
+                  if self.data_map.get(self.index_to_seq_map[key])!= None:
+                    
+                    if key == range_en:
+                      sent = sent + self.data_map[self.index_to_seq_map[key]] + ' and '
+                    else:
+                      sent =  sent + self.data_map[self.index_to_seq_map[key]] + ","
+                  else:
+                    pass
+
+          else:
+            sent = ""
+          to_return = text + " " + sent
+          return to_return
+        
+      elif 'make_plural' in query[1:]:
+        p = inflect.engine()
+        if query[0] == '<':
+          query_ls = query.split()
+        
+          if query_ls[0][1:] == "make_plural":
+            for inx,let in enumerate(query):
+              if let=='{':
+                inx_s = inx
+              elif let == '}':
+                inx_e = inx
+                break
+              else:
+                pass
+          text = query[inx_s+1:inx_e]
+          query_new = query.split(':')
+          query_new = query_new[-1]
+          query_new = query_new[1:len(query_new)-1]
+          params_norm = []
+          params_or = []
+          params_and = []
+
+          if 'or' in query_new:
+            query_list = query_new.split('or')
+            
+            for queries in query_list:
+              param_t = queries.rstrip()
+              param_t = param_t.lstrip()
+              params_or.append(param_t)
+
+
+
+          
+          elif '&' in query_new:
+            query_list = query_new.split('&')
+            
+            for queries in query_list:
+              param_t = queries.rstrip()
+              param_t = param_t.lstrip()
+              params_and.append(param_t)
+
+
+          else:
+
+            query_list = query_new.split()
+            
+            for queries in query_list:
+              param_t = queries.rstrip()
+              param_t = param_t.lstrip()
+              params_norm.append(param_t)
+          check = 0
+          if len(params_and)>0 :
+            for param in params_and:
+              if self.data_map.get(param)!=None:
+                check = 1
+                
+              else:
+                check = 0
+                break
+
+            if check == 1:
+      
+              text = p.plural(text)
+
+
+          elif len(params_or)>0:
+            for param in params_or:
+              if self.data_map.get(param)!=None:
+                check = 1
+                break
+              else:
+                check = 0
+              
+
+            if check == 1:
+          
+              text = p.plural(text)
+            
+          elif len(params_norm)>0:
+              if self.data_map.get(params_norm[0])!=None:
+                check = 1
+              else:
+                check = 0
+          
+
+              if check == 1:
+                text = p.plural(text)
+            
+          else:
+
+            pass
+
+
+        
+
+
+          return text
+      elif 'make_plural_opt' in query[1:]:
+        p = inflect.engine()
+        if query[0] == '<':
+          query_ls = query.split()
+        
+          if query_ls[0][1:] == "make_plural":
+            for inx,let in enumerate(query):
+              if let=='{':
+                inx_s = inx
+              elif let == '}':
+                inx_e = inx
+                break
+              else:
+                pass
+          text = query[inx_s+1:inx_e]
+          query_new = query.split(':')
+          query_new = query_new[-1]
+          query_new = query_new[1:len(query_new)-1]
+          params_norm = []
+          params_or = []
+          params_and = []
+
+          if 'or' in query_new:
+            query_list = query_new.split('or')
+            
+            for queries in query_list:
+              param_t = queries.rstrip()
+              param_t = param_t.lstrip()
+              params_or.append(param_t)
+
+
+
+          
+          elif '&' in query_new:
+            query_list = query_new.split('&')
+            
+            for queries in query_list:
+              param_t = queries.rstrip()
+              param_t = param_t.lstrip()
+              params_and.append(param_t)
+
+
+          else:
+
+            query_list = query_new.split()
+            
+            for queries in query_list:
+              param_t = queries.rstrip()
+              param_t = param_t.lstrip()
+              params_norm.append(param_t)
+          check = 0
+          if len(params_and)>0 :
+            for param in params_and:
+              if self.data_map.get(param)!=None:
+                check = 1
+                
+              else:
+                check = 0
+                break
+
+            if check == 1:
+      
+              text = p.plural(text)
+
+
+          elif len(params_or)>0:
+            for param in params_or:
+              if self.data_map.get(param)!=None:
+                check = 1
+                break
+              else:
+                check = 0
+              
+
+            if check == 1:
+          
+              text = p.plural(text)
+            else:
+              text = ""
+            
+          elif len(params_norm)>0:
+              if self.data_map.get(params_norm[0])!=None:
+                check = 1
+              else:
+                check = 0
+          
+
+              if check == 1:
+                text = p.plural(text)
+              else:
+                text = ""
+            
+          else:
+
+            text = ""
+
+
+        
+
+
+          return text
+
+
+      else:
+        return query
+
+        
+
+            
+
+
+
+
+
+
+     
 
       
     def fetch_data(self):
@@ -432,6 +776,25 @@ class application_window():
             text = text.replace('<'+key+'>',str(self.struct_dict.get(key)()))
 
 
+      if '<' in text and '>' in text:
+        
+        in_st = text.index('<')
+        in_en = text.index('>')
+        text_before_that = text[:in_st]
+        text_after_that = text[in_en+1:]
+
+        text_to_pass = text[in_st : in_en]
+
+
+        text_cr = self.check_for_extra_logic(text_to_pass)
+
+        text = text_before_that + " " + text_cr + " " + text_after_that
+
+        
+          
+
+
+
       return text
 
 
@@ -447,7 +810,7 @@ class application_window():
 
     def get_sequence_data(self):
       for idx,row in self.total_df.iterrows():
-        self.struct_dict[str("data_" + row.Sequence)] = row['Sub-feature']
+        self.struct_dict[str("data_") + str(row.Sequence)] = row['Sub-feature']
 
 
     def get_data_logic(self):
