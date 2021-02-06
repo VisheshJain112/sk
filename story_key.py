@@ -677,9 +677,9 @@ class application_window():
     
     def get_determiner(self):
       if self.gender == "Female":
-        return 'Her'
+        return 'her'
       else:
-        return 'His'
+        return 'his'
 
 
     def get_os(self):
