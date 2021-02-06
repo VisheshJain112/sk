@@ -523,12 +523,12 @@ class application_window():
 
 
           return text
-      elif 'make_plural_opt' in query[1:]:
+      elif 'appearance' in query[1:]:
         p = inflect.engine()
         if query[0] == '*':
           query_ls = query.split()
         
-          if query_ls[0][1:] == "make_plural":
+          if query_ls[0][1:] == "appearance":
             for inx,let in enumerate(query):
               if let=='{':
                 inx_s = inx
@@ -585,7 +585,10 @@ class application_window():
 
             if check == 1:
       
-              text = p.plural(text)
+              text=text
+            else:
+              text = ""
+  
 
 
           elif len(params_or)>0:
@@ -599,10 +602,11 @@ class application_window():
 
             if check == 1:
           
-              text = p.plural(text)
+              text = text
             else:
               text = ""
-            
+
+  
           elif len(params_norm)>0:
               if self.data_map.get(params_norm[0])!=None:
                 check = 1
@@ -611,9 +615,11 @@ class application_window():
           
 
               if check == 1:
-                text = p.plural(text)
+                text = text
               else:
                 text = ""
+
+              
             
           else:
 
