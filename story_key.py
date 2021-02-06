@@ -324,7 +324,7 @@ class application_window():
     def check_for_extra_logic(self,query):
 
       if 'mul' in query[1:]: 
-        if query[0] == '<':
+        if query[0] == '*':
           query_ls = query.split()
           
           if query_ls[0][1:] == "mul":
@@ -428,7 +428,7 @@ class application_window():
         
       elif 'make_plural' in query[1:]:
         p = inflect.engine()
-        if query[0] == '<':
+        if query[0] == '*':
           query_ls = query.split()
         
           if query_ls[0][1:] == "make_plural":
@@ -525,7 +525,7 @@ class application_window():
           return text
       elif 'make_plural_opt' in query[1:]:
         p = inflect.engine()
-        if query[0] == '<':
+        if query[0] == '*':
           query_ls = query.split()
         
           if query_ls[0][1:] == "make_plural":
@@ -776,10 +776,10 @@ class application_window():
             text = text.replace('<'+key+'>',str(self.struct_dict.get(key)()))
 
 
-      if '<' in text and '>' in text:
+      if '*' in text and '#' in text:
         
-        in_st = text.index('<')
-        in_en = text.index('>')
+        in_st = text.index('*')
+        in_en = text.index('#')
         text_before_that = text[:in_st]
         text_after_that = text[in_en+1:]
 
