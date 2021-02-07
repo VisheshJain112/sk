@@ -1,2 +1,2 @@
-LD:/StoryKeyGen/skp/sk/story_logic_sheet (22).xlsx 
-TD:/StoryKeyGen/skp/sk/test_sheet.xlsx 
+LC:/Users/91952/Downloads/Story_Keyword - v3 12 Jan 2021  DevCopy (7).xlsx 
+TC:/Users/91952/Downloads/Data_input_v1_01 Feb 2021_dev copy (4).xlsx 

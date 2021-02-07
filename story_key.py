@@ -164,7 +164,7 @@ class application_window():
             ico_path = curdir+"\myicon.ico"
             root.iconbitmap(ico_path)
 
-            textExample=Text(root, height=10)
+            textExample=Text(root, height=40)
             textExample.pack()
 
             fontExample = tkFont.Font(family="Arial", size=16)
@@ -301,13 +301,20 @@ class application_window():
     def seq_attempt(self):
       self.data_map = {}
       attempt_sheet = self.get_attempt_sheet()
+      #print(attempt_sheet)
+      print(self.total_df)
+
       for idx,row in self.total_df.iterrows():
+
+        try:
         
-        if attempt_sheet[idx]==1:
-          if row['Sequence']!=row['Sequence']:
-            pass
-          else:
-            self.data_map[str(row['Sequence'])] = row['Sub-feature']
+          if attempt_sheet[idx]==1:
+            if row['Sequence']!=row['Sequence']:
+              pass
+            else:
+              self.data_map[str(row['Sequence'])] = row['Sub-feature']
+        except:
+          pass
 
       key_data_map = self.data_map
       key_data_map = sorted(key_data_map)
@@ -711,6 +718,7 @@ class application_window():
 
       self.row_lim = len(df_test_sheet)
       df_attempt = self.df_test_sheet
+      print(df2.iloc[5:])
       df_attempt = np.where(df_attempt == 0,0,1)
       return df_attempt
 
@@ -1075,6 +1083,7 @@ class application_window():
             else:
               pass
           else:
+            
             back_category_value = self.get_category_value()
             
 
@@ -1121,7 +1130,7 @@ class application_window():
 
             
 
-
+      print(data_dict)
 
 
       return total_sent
