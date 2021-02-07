@@ -1046,11 +1046,14 @@ class application_window():
     def get_clubbing_logic(self,list_of_keys):
       
       club_pass = ""
-      for inx,key in enumerate(list_of_keys):
-        if inx != len(list_of_keys) -1:
-          club_pass = club_pass + key + ", "
-        else:
-          club_pass = club_pass[:-2] + " or " + key + "."
+      if len(list_of_keys) > 1: 
+        for inx,key in enumerate(list_of_keys):
+          if inx != len(list_of_keys) -1:
+            club_pass = club_pass + key + ", "
+          else:
+            club_pass = club_pass[:-2] + " or " + key + "."
+      else:
+        club_pass = list_of_keys[0]
 
 
         
