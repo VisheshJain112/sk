@@ -25,6 +25,7 @@ import numpy as np
 from sentence_splitter import SentenceSplitter, split_text_into_sentences
 from gingerit.gingerit import GingerIt
 from os import curdir
+import textwrap
 import re
 import collections
 import inflect
@@ -209,6 +210,7 @@ class application_window():
             total_sent = total_sent.replace(' .','')
             total_sent = total_sent.replace("\n\n. ","\n\n")
             total_sent = self.final_processing(total_sent)
+            total_sent = textwrap.dedent(total_sent)
 
 
 
