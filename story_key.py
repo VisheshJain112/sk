@@ -25,6 +25,7 @@ import numpy as np
 from sentence_splitter import SentenceSplitter, split_text_into_sentences
 from gingerit.gingerit import GingerIt
 from os import curdir
+import re
 import collections
 import inflect
 import tkinter.font as tkFont
@@ -207,6 +208,7 @@ class application_window():
             total_sent = self.os+ "." +"\n"+ " "+self.get_data_dict()
             total_sent = total_sent.replace(' .','')
             total_sent = total_sent.replace("\n\n. ","\n\n")
+            total_sent = self.final_processing(total_sent)
 
 
 
@@ -268,7 +270,19 @@ class application_window():
           pass
         else:
           self.category_logic.append(cat)
-      return ','.join(self.category_logic)
+      to_return = ""
+      if len(self.category_logic) > 1:
+        for inx,catu in enumerate(self.category_logic):
+          if inx == len(self.category_logic) - 1:
+            to_return = to_return[:-2] + " and " + catu
+          else:
+            to_return = to_return + " " + catu + ", "
+      else:
+        to_return = self.category_logic[0]
+          
+
+
+      return to_return
 
 
     def get_category_1(self):
@@ -635,7 +649,8 @@ class application_window():
 
         
 
-
+          text = text.rstrip()
+          text = text.lstrip()
           return text
 
 
@@ -801,7 +816,8 @@ class application_window():
 
 
         text_cr = self.check_for_extra_logic(text_to_pass)
-
+        text_cr = text_cr.rstrip()
+        text_cr = text_cr.lstrip()
         text = text_before_that + " " + text_cr + " " + text_after_that
 
         
@@ -1030,7 +1046,7 @@ class application_window():
       club_pass = ""
       for inx,key in enumerate(list_of_keys):
         if inx != len(list_of_keys) -1:
-          club_pass = club_pass + ' , ' + key
+          club_pass = club_pass + key + ", "
         else:
           club_pass = club_pass + " or " + key
 
@@ -1038,6 +1054,13 @@ class application_window():
         
       clb_sent =  str(self.get_clb_logic()) + " " + str(club_pass)
       return clb_sent
+
+    def final_processing(self,text):
+      
+      rx = r"\.(?=\S)"
+      s = text
+      result = re.sub(rx, ". ", s)
+      return result
       
     def get_data_dict(self):
       clb_sent = []
@@ -1136,8 +1159,6 @@ class application_window():
       total_sent = total_sent + self.get_my_sentence(data_dict,clb_sent) 
 
             
-
-      print(data_dict)
 
 
       return total_sent
