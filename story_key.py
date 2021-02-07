@@ -1050,7 +1050,7 @@ class application_window():
         if inx != len(list_of_keys) -1:
           club_pass = club_pass + key + ", "
         else:
-          club_pass = club_pass + " or " + key
+          club_pass = club_pass[:-2] + " or " + key + "."
 
 
         
