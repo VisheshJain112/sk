@@ -732,10 +732,10 @@ class application_window():
       if data_dict.get('B3-c') is not None or data_dict.get('B3-d') is not None:
         if data_dict.get('A-a') is not None:
           
-          data_dict['A-a'] = self.make_me_plural(data_dict['A-a'])
+          pass
         elif data_dict.get('A-b') is not None:
           
-          data_dict['A-b'] = self.make_me_plural(data_dict['A-b'])
+          pass
 
         else:
           pass
@@ -1027,9 +1027,16 @@ class application_window():
 
     def get_clubbing_logic(self,list_of_keys):
       
-      
+      club_pass = ""
+      for inx,key in enumerate(list_of_keys):
+        if inx != len(list_of_keys) -1:
+          club_pass = club_pass + ' , ' + key
+        else:
+          club_pass = club_pass + " or " + key
 
-      clb_sent =  str(self.get_clb_logic()) + " " +str("or ".join(list_of_keys))
+
+        
+      clb_sent =  str(self.get_clb_logic()) + " " + str(club_pass)
       return clb_sent
       
     def get_data_dict(self):
