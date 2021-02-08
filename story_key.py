@@ -823,7 +823,7 @@ class application_window():
         text_cr = self.check_for_extra_logic(text_to_pass)
         text_cr = text_cr.rstrip()
         text_cr = text_cr.lstrip()
-        text = text_before_that + " " + text_cr + " " + text_after_that
+        text = text_before_that + text_cr + " " + text_after_that
         text = text.rstrip()
         text = text.lstrip()
 
@@ -1135,6 +1135,10 @@ class application_window():
             keys_values = data_dict.items()
 
             data_dict = {str(key): str(value) for key, value in keys_values}
+            
+
+
+
 
             
             
@@ -1168,6 +1172,8 @@ class application_window():
 
       total_sent = total_sent + self.get_my_sentence(data_dict,clb_sent) 
 
+
+
             
 
 
@@ -1189,7 +1195,7 @@ class application_window():
           for key,value in data_dict.items():
             sent = sent + str(value) + " "
         elif sentstruct['clubbing_logic'] == i:
-          sent = sent + "." + clb_sent
+          sent = sent + "." + clb_sent + "."
         else:
           pass
 
