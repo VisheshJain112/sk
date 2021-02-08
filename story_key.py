@@ -823,7 +823,18 @@ class application_window():
         text_cr = self.check_for_extra_logic(text_to_pass)
         text_cr = text_cr.rstrip()
         text_cr = text_cr.lstrip()
-        text = text_before_that + text_cr + " " + text_after_that
+        if text_after_that[0] == ' ':
+          if text_before_that[-1] == ' ':
+            text = text_before_that + text_cr + text_after_that
+          else:
+            text = text_before_that + ' ' + text_cr + text_after_that
+        else:
+          if text_before_that[-1] == ' ':
+            text = text_before_that + text_cr + ' ' + text_after_that
+          else:
+            text = text_before_that + ' ' + text_cr + ' ' + text_after_that
+
+
         text = text.rstrip()
         text = text.lstrip()
 
