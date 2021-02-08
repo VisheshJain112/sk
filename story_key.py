@@ -447,6 +447,8 @@ class application_window():
           else:
             sent = ""
           to_return = text + " " + sent
+          to_return = to_return.rstrip()
+          to_return = to_return.lstrip()
           return to_return
         
       elif 'make_plural' in query[1:]:
@@ -543,7 +545,8 @@ class application_window():
 
 
         
-
+          text = text.rstrip()
+          text = text.lstrip()
 
           return text
       elif 'appearance' in query[1:]:
@@ -821,6 +824,8 @@ class application_window():
         text_cr = text_cr.rstrip()
         text_cr = text_cr.lstrip()
         text = text_before_that + " " + text_cr + " " + text_after_that
+        text = text.rstrip()
+        text = text.lstrip()
 
         
           
