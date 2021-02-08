@@ -407,7 +407,7 @@ class application_window():
               pass
             
 
-          if len(ranges_and)>0 :
+          if len(ranges_and)>1:
               sent = ""
       
               for ranges in ranges_and:
@@ -420,12 +420,14 @@ class application_window():
             
                   if self.data_map.get(self.index_to_seq_map[key])!= None:
                     
-                    if key == range_en:
+                    if key == range_en -1:
                       sent = sent + self.data_map[self.index_to_seq_map[key]] + ' and '
                     else:
                       sent =  sent + self.data_map[self.index_to_seq_map[key]] + ","
                   else:
                     pass
+          
+            
               
 
             
@@ -443,7 +445,7 @@ class application_window():
             
                   if self.data_map.get(self.index_to_seq_map[key])!= None:
                     
-                    if key == range_en:
+                    if key == range_en -1:
                       sent = sent + self.data_map[self.index_to_seq_map[key]] + ' and '
                     else:
                       sent =  sent + self.data_map[self.index_to_seq_map[key]] + ","
