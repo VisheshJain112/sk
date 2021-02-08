@@ -205,12 +205,16 @@ class application_window():
             self.data_logic_sheet = self.pad_array(data_logic_sheet,self.row_lim+1)
             self.get_os()
 
-
-            total_sent = self.os+ "." +"\n"+ " "+self.get_data_dict()
+            self.os = textwrap.dedent(self.os)
+            dat_dict = textwrap.dedent(self.get_data_dict())
+            total_sent = self.os+ "." +"\n"+ " "+ dat_dict
             total_sent = total_sent.replace(' .','')
             total_sent = total_sent.replace("\n\n. ","\n\n")
             total_sent = self.final_processing(total_sent)
-            total_sent = textwrap.dedent(total_sent)
+            
+
+            total_sent = total_sent.replace(' . ','. ')
+
 
 
 
@@ -271,6 +275,8 @@ class application_window():
         if cat!=cat:
           pass
         else:
+          cat = cat.rstrip()
+          cat = cat.lstrip()
           self.category_logic.append(cat)
       to_return = ""
       if len(self.category_logic) > 1:
@@ -278,7 +284,7 @@ class application_window():
           if inx == len(self.category_logic) - 1:
             to_return = to_return[:-2] + " and " + catu
           else:
-            to_return = to_return + " " + catu + ", "
+            to_return = to_return[:-1] + " " + catu + ", "
       else:
         to_return = self.category_logic[0]
           
@@ -834,7 +840,7 @@ class application_window():
               text = text_before_that + text_cr + ' ' + text_after_that
             else:
               text = text_before_that + ' ' + text_cr + ' ' + text_after_that
-        except:
+        except:    
           text = text_before_that + text_cr + text_after_that
 
 
