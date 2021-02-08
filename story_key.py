@@ -207,6 +207,7 @@ class application_window():
 
             self.os = textwrap.dedent(self.os)
             dat_dict = textwrap.dedent(self.get_data_dict())
+
             total_sent = self.os+ "." +"\n"+ " "+ dat_dict
             total_sent = total_sent.replace(' .','')
             total_sent = total_sent.replace("\n\n. ","\n\n")
@@ -214,6 +215,15 @@ class application_window():
             
 
             total_sent = total_sent.replace(' . ','. ')
+            total_sent = total_sent.replace('.  ','. ')
+            total_sent = total_sent.replace(' .','')
+            """
+            for rep in self.new_report_choice:
+              total_sent = total_sent.replace(rep+'.','')
+
+            """
+            total_sent = re.sub(r'\n\s*\n', '\n\n', total_sent)
+
 
 
 
@@ -331,10 +341,10 @@ class application_window():
         try:
         
           if attempt_sheet[idx]==1:
-            if row['Sequence']!=row['Sequence']:
+            if row['Digital Sequence']!=row['Digital Sequence']:
               pass
             else:
-              self.data_map[str(row['Sequence'])] = row['Sub-feature']
+              self.data_map[str(row['Digital Sequence'])] = row['Sub-feature']
         except:
           pass
 
@@ -869,7 +879,7 @@ class application_window():
 
     def get_sequence_data(self):
       for idx,row in self.total_df.iterrows():
-        self.struct_dict[str("data_") + str(row.Sequence)] = row['Sub-feature']
+        self.struct_dict[str("data_") + str(row['Digital Sequence'])] = row['Sub-feature']
 
 
     def get_data_logic(self):
@@ -883,8 +893,9 @@ class application_window():
       for ch in self.rpt_choice:
         if ch is not None:
           new_rpt_choice.append(self.get_logic_sent(ch))
+      
       new_rept_choice = self.remove_nan(new_rpt_choice)
-
+      self.new_report_choice = new_rept_choice
   
       return str(random.choice(new_rept_choice))
 
@@ -1084,7 +1095,7 @@ class application_window():
 
 
         
-      clb_sent =  str(self.get_clb_logic()) + " " + str(club_pass)
+      clb_sent =  str(". " + self.get_clb_logic()) + " " + str(club_pass)
       return clb_sent
 
     def final_processing(self,text):
@@ -1108,6 +1119,8 @@ class application_window():
             
             if self.remark_sheet[self.idx] == 0:
               if self.df_attempt[self.idx] == 1:
+                
+                
                 if self.clb_sheet[self.idx] == 1:
                   if row['AN-Data dictionary']!=row['AN-Data dictionary']:
                     pass
@@ -1116,14 +1129,15 @@ class application_window():
                   
                 else:
 
-                  if row.Sequence!=row.Sequence:
+                  if row['Digital Sequence']!=row['Digital Sequence']:
                     pass
                   else:
 
-                    if self.get_alphanumeric(str(row.Sequence)):
+             
       
                       
-                        data_dict[row.Sequence] = self.get_logic_sent(str(row['AN-Data dictionary']))
+                    data_dict[row['Digital Sequence']] = self.get_logic_sent(str(row['AN-Data dictionary']))
+
                     
                   
                 
@@ -1131,11 +1145,6 @@ class application_window():
 
                         
 
-                        
-                      #print(row.Sequence)
-                      
-                    else:
-                      data_dict[row.Sequence] = "."+self.get_logic_sent(str(row['A-Sentence']))+"."
       
                     
 
@@ -1153,7 +1162,7 @@ class application_window():
               data_dict[key] = self.get_logic_sent(str(value))
             data_dict = self.get_dependency_logic(data_dict)
             
-
+            print(data_dict)
             keys_values = data_dict.items()
 
             data_dict = {str(key): str(value) for key, value in keys_values}
@@ -1170,8 +1179,11 @@ class application_window():
 
 
 
+            total_sent = total_sent.replace('  ',' ')
 
             total_sent = total_sent + self.get_my_sentence(data_dict,clb_sent) + "\n\n"
+
+
 
 
 
@@ -1188,11 +1200,13 @@ class application_window():
       keys_values = data_dict.items()
 
       data_dict = {str(key): str(value) for key, value in keys_values}
-
+      print(data_dict)
       
 
+      total_sent = total_sent.replace('  ',' ')
+      total_sent = total_sent + self.get_my_sentence(data_dict,clb_sent)  + "\n\n"
 
-      total_sent = total_sent + self.get_my_sentence(data_dict,clb_sent) 
+      
 
 
 
@@ -1208,18 +1222,25 @@ class application_window():
         sentstruct = json.load(tweetfile)
       sent = ""
       for i in range(1,5):
-        if sentstruct['address_logic'] == i:
-          sent = sent + "." + " " + self.get_address_logic() + " "
-        elif sentstruct['report_logic'] == i:
-          sent = sent + self.get_report_logic() + " "
+        if len(data_dict) > 0:
+          if sentstruct['address_logic'] == i:
+            sent = sent + "." + " " + self.get_address_logic() + " "
+          elif sentstruct['report_logic'] == i:
+            sent = sent + self.get_report_logic() + " "
 
-        elif sentstruct['data_logic'] == i:
-          for key,value in data_dict.items():
-            sent = sent + str(value) + " "
-        elif sentstruct['clubbing_logic'] == i:
-          sent = sent + "." + clb_sent + "."
+          elif sentstruct['data_logic'] == i:
+            for key,value in data_dict.items():
+              sent = sent + str(value) + " "
+          elif sentstruct['clubbing_logic'] == i:
+            sent = sent + "." + clb_sent + "."
+          else:
+            pass
+          
+
         else:
           pass
+
+
 
 
 
@@ -1298,7 +1319,7 @@ class application_window():
 
       sent = self.form_sentence(data_dict,clb_sent)
 
-      sent = sent.replace("nan","")
+      sent = sent.replace(" nan ","")
 
       
 
