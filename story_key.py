@@ -192,6 +192,7 @@ class application_window():
             self.fetch_data()
             self.get_sequence_data()
             self.seq_attempt()
+            self.cat_attempt()
 
             clb_sheet = self.get_clubbing_sheet()
             self.clb_sheet = self.pad_array(clb_sheet,self.row_lim+1)
@@ -289,6 +290,7 @@ class application_window():
           cat = cat.lstrip()
           self.category_logic.append(cat)
       to_return = ""
+      self.category_logic = self.cat_map
       if len(self.category_logic) > 1:
         for inx,catu in enumerate(self.category_logic):
           if inx == len(self.category_logic) - 1:
@@ -297,7 +299,9 @@ class application_window():
             to_return = to_return[:-1] + " " + catu + ", "
       else:
         to_return = self.category_logic[0]
-          
+      
+      to_return = to_return.rstrip()
+      to_return = to_return.lstrip()
 
 
       return to_return
@@ -357,6 +361,36 @@ class application_window():
       for inx,key in enumerate(keys_list):
         self.seq_to_index_map[key] = inx
         self.index_to_seq_map[inx] = key
+
+
+    def cat_attempt(self):
+      self.cat_map = []
+      attempt_sheet = self.get_attempt_sheet()
+      #print(attempt_sheet)
+      print(self.total_df)
+
+      for idx,row in self.total_df.iterrows():
+
+        try:
+        
+          if attempt_sheet[idx]==1:
+            if row['Digital Sequence']!=row['Digital Sequence']:
+              pass
+            else:
+              if row['Category']!=row['Category']:
+                pass
+              else:
+                self.cat_map.append(row['Category'])
+        except:
+          pass
+      
+      self.cat_map = set(self.cat_map)
+      self.cat_map = list(self.cat_map)
+
+      print(self.cat_map)
+
+
+
 
 
 
