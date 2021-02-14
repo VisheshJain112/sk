@@ -188,6 +188,7 @@ class application_window():
 
             df_attempt = self.get_attempt_sheet()
             self.df_attempt = self.pad_array(df_attempt,self.row_lim+1)
+            print(self.df_attempt)
             self.get_total_df()
             self.fetch_data()
             self.get_sequence_data()
@@ -196,6 +197,7 @@ class application_window():
 
             clb_sheet = self.get_clubbing_sheet()
             self.clb_sheet = self.pad_array(clb_sheet,self.row_lim+1)
+            
             remark_sheet = self.get_remark_sheet()
             self.remark_sheet = self.pad_array(remark_sheet,self.row_lim+1)
             dependency_sheet = self.get_dependency_sheet()
@@ -218,6 +220,7 @@ class application_window():
             total_sent = total_sent.replace(' . ','. ')
             total_sent = total_sent.replace('.  ','. ')
             total_sent = total_sent.replace(' .','')
+            total_sent = total_sent.replace('. ,',', ')
             """
             for rep in self.new_report_choice:
               total_sent = total_sent.replace(rep+'.','')
@@ -338,7 +341,7 @@ class application_window():
       self.data_map = {}
       attempt_sheet = self.get_attempt_sheet()
       #print(attempt_sheet)
-      print(self.total_df)
+      #print(self.total_df)
 
       for idx,row in self.total_df.iterrows():
 
@@ -367,7 +370,7 @@ class application_window():
       self.cat_map = []
       attempt_sheet = self.get_attempt_sheet()
       #print(attempt_sheet)
-      print(self.total_df)
+      #print(self.total_df)
 
       for idx,row in self.total_df.iterrows():
 
@@ -790,7 +793,7 @@ class application_window():
 
       self.row_lim = len(df_test_sheet)
       df_attempt = self.df_test_sheet
-      print(df2.iloc[5:])
+      #print(df2.iloc[5:])
       df_attempt = np.where(df_attempt == 0,0,1)
       return df_attempt
 
@@ -1146,20 +1149,29 @@ class application_window():
       total_sent = ""
       self.idx  = 1
       back_category_value = self.get_category_value()
+      print(len(self.total_df))
       for self.idx,row in self.total_df.iterrows():
         if self.get_category_value()!=None:
           if back_category_value == self.get_category_value():
         
             
             if self.remark_sheet[self.idx] == 0:
+  
               if self.df_attempt[self.idx] == 1:
+                print(row['AN-Data dictionary'])
+
                 
                 
-                if self.clb_sheet[self.idx] == 1:
+                
+                if self.clb_sheet[self.idx]!=0:
+                  print("Here is the problem")
                   if row['AN-Data dictionary']!=row['AN-Data dictionary']:
                     pass
                   else:
+                    
                     clb_sent.append(self.get_logic_sent(str(row['AN-Data dictionary'])))
+                    print("CLUBBING SENT")
+                    print(clb_sent)
                   
                 else:
 
@@ -1171,18 +1183,6 @@ class application_window():
       
                       
                     data_dict[row['Digital Sequence']] = self.get_logic_sent(str(row['AN-Data dictionary']))
-
-                    
-                  
-                
-
-
-                        
-
-      
-                    
-
-              
               else:
                 pass
             else:
@@ -1196,7 +1196,7 @@ class application_window():
               data_dict[key] = self.get_logic_sent(str(value))
             data_dict = self.get_dependency_logic(data_dict)
             
-            print(data_dict)
+            #print(data_dict)
             keys_values = data_dict.items()
 
             data_dict = {str(key): str(value) for key, value in keys_values}
@@ -1234,7 +1234,7 @@ class application_window():
       keys_values = data_dict.items()
 
       data_dict = {str(key): str(value) for key, value in keys_values}
-      print(data_dict)
+      #print(data_dict)
       
 
       total_sent = total_sent.replace('  ',' ')
@@ -1260,7 +1260,7 @@ class application_window():
           if sentstruct['address_logic'] == i:
             sent = sent + "." + " " + self.get_address_logic() + " "
           elif sentstruct['report_logic'] == i:
-            sent = sent + self.get_report_logic() + " "
+            sent = sent + " " + self.get_report_logic() + " "
 
           elif sentstruct['data_logic'] == i:
             for key,value in data_dict.items():
