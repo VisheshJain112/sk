@@ -223,7 +223,7 @@ class application_window():
             total_sent = total_sent.replace('. ,',', ')
             total_sent = total_sent.replace('..','. ')
             total_sent = total_sent.replace(',,',', ')
-            
+
             """
             for rep in self.new_report_choice:
               total_sent = total_sent.replace(rep+'.','')
@@ -270,8 +270,8 @@ class application_window():
 
 
             
-        root.after(2900, lambda : get_case_num())
-        root.after(3000, root.destroy)
+        root.after(900, lambda : get_case_num())
+        root.after(1300, root.destroy)
 
     def get_name(self):
       return self.name
