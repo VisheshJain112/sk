@@ -1162,7 +1162,7 @@ class application_window():
           if back_category_value == self.get_category_value():
         
             
-            if self.remark_sheet[self.idx]!= 0:
+            if self.remark_sheet[self.idx]== 0:
   
               if self.df_attempt[self.idx] == 1:
                 print(row['AN-Data dictionary'])
