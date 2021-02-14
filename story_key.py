@@ -221,6 +221,9 @@ class application_window():
             total_sent = total_sent.replace('.  ','. ')
             total_sent = total_sent.replace(' .','')
             total_sent = total_sent.replace('. ,',', ')
+            total_sent = total_sent.replace('..','. ')
+            total_sent = total_sent.replace(',,',', ')
+            
             """
             for rep in self.new_report_choice:
               total_sent = total_sent.replace(rep+'.','')
