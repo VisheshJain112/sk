@@ -211,7 +211,7 @@ class application_window():
             self.os = textwrap.dedent(self.os)
             dat_dict = textwrap.dedent(self.get_data_dict())
 
-            total_sent = self.os+ "." +"\n"+ " "+ dat_dict
+            total_sent = self.os+ "." +"(OS) "+ dat_dict
             total_sent = total_sent.replace(' .','')
             total_sent = total_sent.replace("\n\n. ","\n\n")
             total_sent = self.final_processing(total_sent)
@@ -364,7 +364,7 @@ class application_window():
 
       key_data_map = self.data_map
       key_data_map = sorted(key_data_map)
-      #print(self.data_map)
+      print(self.data_map)
       keys_list = key_data_map
       self.seq_to_index_map = {}
       self.index_to_seq_map = {}
@@ -1182,14 +1182,14 @@ class application_window():
                   
                 else:
 
-                  if row['Digital Sequence']!=row['Digital Sequence']:
+                  if row['Sequence']!=row['Sequence']:
                     pass
                   else:
 
              
       
                       
-                    data_dict[row['Digital Sequence']] = self.get_logic_sent(str(row['AN-Data dictionary']))
+                    data_dict[row['Sequence']] = self.get_logic_sent(str(row['AN-Data dictionary'])) + ' (' + str(row['Sequence']) + ')'
               else:
                 pass
             else:
@@ -1203,7 +1203,7 @@ class application_window():
               data_dict[key] = self.get_logic_sent(str(value))
             data_dict = self.get_dependency_logic(data_dict)
             
-            #print(data_dict)
+            print(data_dict)
             keys_values = data_dict.items()
 
             data_dict = {str(key): str(value) for key, value in keys_values}
