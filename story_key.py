@@ -30,6 +30,8 @@ import re
 import collections
 import inflect
 import tkinter.font as tkFont
+import natsort
+from collections import OrderedDict
 # Designing window for registration
 
 
@@ -211,7 +213,7 @@ class application_window():
             self.os = textwrap.dedent(self.os)
             dat_dict = textwrap.dedent(self.get_data_dict())
 
-            total_sent = self.os+ "." +"(OS) "+ dat_dict
+            total_sent = self.os+ "." +"(OS) " +"\n\n"+ dat_dict
             total_sent = total_sent.replace(' .','')
             total_sent = total_sent.replace("\n\n. ","\n\n")
             total_sent = self.final_processing(total_sent)
@@ -355,10 +357,11 @@ class application_window():
         try:
         
           if attempt_sheet[idx]==1:
-            if row['Digital Sequence']!=row['Digital Sequence']:
+            if row['Row-Number']!=row['Row-Number']:
               pass
             else:
-              self.data_map[str(row['Digital Sequence'])] = row['Sub-feature']
+    
+              self.data_map[str(row['Row-Number'])] = row['Sub-feature']
         except:
           pass
 
@@ -384,7 +387,7 @@ class application_window():
         try:
         
           if attempt_sheet[idx]==1:
-            if row['Digital Sequence']!=row['Digital Sequence']:
+            if row['Row-Number']!=row['Row-Number']:
               pass
             else:
               if row['Category']!=row['Category']:
@@ -423,7 +426,7 @@ class application_window():
       
           query_new = query.split('Range')
           query_new = query_new[-1]
-          query_new = query_new[1:len(query_new)-1]
+          query_new = query_new[1:len(query_new)]
           #print(query_new)
           ranges_or = []
           ranges_and = []
@@ -436,6 +439,8 @@ class application_window():
               if ' & ' in query_new:
                 t_query = query_new[range_start+1:range_end]
                 ran_seq = t_query.split(':')
+                print(t_query)
+                print(query_new)
                 range_1 = ran_seq[0].rstrip()
                 range_1 = range_1.lstrip()
                 range_2 = ran_seq[1].rstrip()
@@ -459,22 +464,27 @@ class application_window():
                 range_let = [range_1,range_2]
             else:
               pass
-            
+              
+        
 
           if len(ranges_and)>1:
               sent = ""
       
               for ranges in ranges_and:
+                m_ranges = []
+                for irange in range(int(ranges[0]),int(ranges[1])+1):
+                  if self.seq_to_index_map.get(irange)!=None:
+                    m_ranges.append(irange)
+                  else:
+                    pass
+                  
                 
-        
-                range_st = int(self.seq_to_index_map[ranges[0]])
-                range_en = int(self.seq_to_index_map[ranges[1]])
-            
-                for key in range(range_st,range_en + 1):
+
+                for key in m_ranges:
             
                   if self.data_map.get(self.index_to_seq_map[key])!= None:
                     
-                    if key == range_en -1:
+                    if key == m_ranges[-1] -1:
                       sent = sent + self.data_map[self.index_to_seq_map[key]] + ' and '
                     else:
                       sent =  sent + self.data_map[self.index_to_seq_map[key]] + ","
@@ -489,25 +499,59 @@ class application_window():
           elif len(ranges_or)>0 :
               sent = ""
       
-              for ranges in ranges_and:
+              for ranges in ranges_or:
                 
         
-                range_st = int(self.seq_to_index_map[ranges[0]])
-                range_en = int(self.seq_to_index_map[ranges[1]])
-            
-                for key in range(range_st,range_en + 1):
+                m_ranges = []
+                for irange in range(int(ranges[0]),int(ranges[1])+1):
+                  if self.seq_to_index_map.get(irange)!=None:
+                    m_ranges.append(irange)
+                  else:
+                    pass
+                  
+                
+
+                for key in m_ranges:
             
                   if self.data_map.get(self.index_to_seq_map[key])!= None:
                     
-                    if key == range_en -1:
-                      sent = sent + self.data_map[self.index_to_seq_map[key]] + ' and '
+                    if key == m_ranges[-1] -1:
+                      sent = sent + self.data_map[self.index_to_seq_map[key]] + ' or '
                     else:
                       sent =  sent + self.data_map[self.index_to_seq_map[key]] + ","
                   else:
                     pass
-
           else:
-            sent = ""
+              sent = ""
+      
+      
+              if len(range_let)>0:
+                m_ranges = []
+                for irange in range(int(range_let[0]),int(range_let[1])+1):
+                  if self.seq_to_index_map.get(str(irange))!=None:
+                    m_ranges.append(irange)
+                  else:
+                    pass
+                print("printing M changes here")
+                print(m_ranges)
+                  
+                
+
+                for key in m_ranges:
+                  print("Printing DATA MAP")
+                  print(self.data_map.keys())
+                  print(self.data_map.get(str(key)))
+                  key = str(key)
+              
+            
+                  if self.data_map.get(key)!= None:
+                    
+                    if key == str(m_ranges[-1] -1):
+                      sent = sent + self.data_map[key] + ' and '
+                    else:
+                      sent =  sent + self.data_map[key] + ","
+                  else:
+                    pass
           to_return = text + " " + sent
           to_return = to_return.rstrip()
           to_return = to_return.lstrip()
@@ -923,7 +967,7 @@ class application_window():
 
     def get_sequence_data(self):
       for idx,row in self.total_df.iterrows():
-        self.struct_dict[str("data_") + str(row['Digital Sequence'])] = row['Sub-feature']
+        self.struct_dict[str("data_") + str(row['Row-Number'])] = row['Sub-feature']
 
 
     def get_data_logic(self):
@@ -1187,9 +1231,15 @@ class application_window():
                   else:
 
              
-      
+                    if row['AN-Data dictionary']!=row['AN-Data dictionary']:
+                      pass
+                    else:
+                      data_dict[row['Sequence']] = self.get_logic_sent(str(row['AN-Data dictionary']))
+                      f = open('Value-json/logic_activation.json') 
+                      activation = json.load(f)
+                      if activation['seq_label'] == "active":
                       
-                    data_dict[row['Sequence']] = self.get_logic_sent(str(row['AN-Data dictionary'])) + ' (' + str(row['Sequence']) + ')'
+                        data_dict[row['Sequence']] = self.get_logic_sent(str(row['AN-Data dictionary'])) + ' (' + str(row['Sequence']) + ')'
               else:
                 pass
             else:
@@ -1205,8 +1255,11 @@ class application_window():
             
             print(data_dict)
             keys_values = data_dict.items()
+       
 
             data_dict = {str(key): str(value) for key, value in keys_values}
+            data_dict_new = OrderedDict(natsort.natsorted(data_dict.items()))
+         
             
 
 
@@ -1222,7 +1275,7 @@ class application_window():
 
             total_sent = total_sent.replace('  ',' ')
 
-            total_sent = total_sent + self.get_my_sentence(data_dict,clb_sent) + "\n\n"
+            total_sent = total_sent + self.get_my_sentence(data_dict_new,clb_sent) + "\n\n"
 
 
 
@@ -1241,11 +1294,13 @@ class application_window():
       keys_values = data_dict.items()
 
       data_dict = {str(key): str(value) for key, value in keys_values}
+      data_dict_new = OrderedDict(natsort.natsorted(data_dict.items()))
+
       #print(data_dict)
       
 
       total_sent = total_sent.replace('  ',' ')
-      total_sent = total_sent + self.get_my_sentence(data_dict,clb_sent)  + "\n\n"
+      total_sent = total_sent + self.get_my_sentence(data_dict_new,clb_sent)  + "\n\n"
 
       
 
@@ -1309,8 +1364,6 @@ class application_window():
         f_output = ' '.join(gram_sent)
 
 
-        if f_output[-1] == '.' and f_output[-2] == '.':
-          f_output = f_output[:-2]
 
 
 
@@ -1334,14 +1387,6 @@ class application_window():
     def remove_trailing_dots(self,f_output):
 
 
-      if f_output[-1] == '.' and f_output[-2] == '.':
-        f_output = f_output[:-2]
-
-
-
-
-      
-      f_output = f_output + '.'
 
     
 
@@ -1352,13 +1397,15 @@ class application_window():
     def get_my_sentence(self,data_dict,clb_sent):
         
       data_dict = collections.OrderedDict(sorted(data_dict.items()))
+      data_dict_new = OrderedDict(natsort.natsorted(data_dict.items()))
+     
     
       if len(clb_sent) > 0:
         clb_sent = self.get_clubbing_logic(clb_sent)
       else:
         clb_sent = ""
 
-      sent = self.form_sentence(data_dict,clb_sent)
+      sent = self.form_sentence(data_dict_new,clb_sent)
 
       sent = sent.replace(" nan ","")
 
