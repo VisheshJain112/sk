@@ -31,7 +31,6 @@ import collections
 import inflect
 import tkinter.font as tkFont
 import natsort
-from punctuator import Punctuator
 from collections import OrderedDict
 # Designing window for registration
 
@@ -244,8 +243,7 @@ class application_window():
             total_sent = total_sent.replace('. ','.')
             
 
-            p = Punctuator('model.pcl')
-            total_sent = p.punctuate(total_sent))
+
             
             #total_sent = re.sub(r'\n\n+', '\n',total_sent)
 
