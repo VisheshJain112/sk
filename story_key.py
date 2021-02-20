@@ -31,7 +31,7 @@ import collections
 import inflect
 import tkinter.font as tkFont
 import natsort
-from deepcorrect import DeepCorrect
+from punctuator import Punctuator
 from collections import OrderedDict
 # Designing window for registration
 
@@ -243,8 +243,9 @@ class application_window():
             total_sent = re.sub(r'\n\s*\n', '\n\n', total_sent)
             total_sent = total_sent.replace('. ','.')
             
-            corrector = DeepCorrect('params_path', 'checkpoint_path')
-            total_sent = corrector.correct(total_sent)
+
+            p = Punctuator('model.pcl')
+            total_sent = p.punctuate(total_sent))
             
             #total_sent = re.sub(r'\n\n+', '\n',total_sent)
 
