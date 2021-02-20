@@ -31,6 +31,7 @@ import collections
 import inflect
 import tkinter.font as tkFont
 import natsort
+from deepcorrect import DeepCorrect
 from collections import OrderedDict
 # Designing window for registration
 
@@ -212,8 +213,12 @@ class application_window():
 
             self.os = textwrap.dedent(self.os)
             dat_dict = textwrap.dedent(self.get_data_dict())
+            total_sent = self.os+ "." +"\n\n"+ dat_dict
+            f = open('Value-json/logic_activation.json') 
+            activation = json.load(f)
+            if activation['seq_label'] == "active":
 
-            total_sent = self.os+ "." +"(OS) " +"\n\n"+ dat_dict
+              total_sent = self.os+ "." +"(OS) " +"\n\n"+ dat_dict
             total_sent = total_sent.replace(' .','')
             total_sent = total_sent.replace("\n\n. ","\n\n")
             total_sent = self.final_processing(total_sent)
@@ -238,7 +243,10 @@ class application_window():
             total_sent = re.sub(r'\n\s*\n', '\n\n', total_sent)
             total_sent = total_sent.replace('. ','.')
             
-            total_sent = re.sub(r'\n+', '\n',total_sent)
+            corrector = DeepCorrect('params_path', 'checkpoint_path')
+            total_sent = corrector.correct(total_sent)
+            
+            #total_sent = re.sub(r'\n\n+', '\n',total_sent)
 
 
 
@@ -267,6 +275,7 @@ class application_window():
             def retrieve_input():
    
                 self.case_num=textBox1.get("1.0","end-1c")
+              
                 self.case_num = int(self.case_num)
                 del_and_open()
 
@@ -555,7 +564,10 @@ class application_window():
                       sent =  sent + self.data_map[key] + ","
                   else:
                     pass
-          to_return = text + " " + sent
+          if sent == "":
+            to_return = ""
+          else:
+            to_return = text + " " + sent
           to_return = to_return.rstrip()
           to_return = to_return.lstrip()
           return to_return
@@ -801,6 +813,8 @@ class application_window():
 
 
       self.clb_choice = self.df_structure_logic['Clubbing logic'].values
+      self.oc_choice = self.df_structure_logic['OC logic'].values
+      self.oc_choice = self.remove_nan(self.oc_choice)
 
       self.rpt_choice = self.df_structure_logic['Report logic'].values
 
@@ -1242,7 +1256,7 @@ class application_window():
                       activation = json.load(f)
                       if activation['seq_label'] == "active":
                       
-                        data_dict[row['Sequence']] = self.get_logic_sent(str(row['AN-Data dictionary'])) + ' (' + str(row['Sequence']) + ')'
+                        data_dict[row['Sequence']] = self.get_logic_sent(str(row['AN-Data dictionary'])) + ' (' + str(row['Sequence']) + ')' 
               else:
                 pass
             else:
@@ -1277,13 +1291,22 @@ class application_window():
 
 
             total_sent = total_sent.replace('  ',' ')
+            oberoi = (str(self.get_my_sentence(data_dict_new,clb_sent)).lstrip('\r\n')).rstrip('\r\n')
 
-            total_sent = total_sent + self.get_my_sentence(data_dict_new,clb_sent) + "\n\n"
+            if oberoi == "":
+              pass
+            else:
+         
+              oberoi = re.sub('\n+','\n',oberoi)
+              total_sent = total_sent + str(random.choice(self.oc_choice)) + ', '+ oberoi + "\n\n"
 
 
+            print("OREO IS NOT SO GOOD")
 
+            print(total_sent)
+            print(str(random.choice(self.oc_choice)))
 
-
+            print(oberoi)
             clb_sent = []
             data_dict = {}
     
@@ -1303,7 +1326,7 @@ class application_window():
       
 
       total_sent = total_sent.replace('  ',' ')
-      total_sent = total_sent + self.get_my_sentence(data_dict_new,clb_sent)  + "\n\n"
+      total_sent = total_sent + self.get_my_sentence(data_dict_new,clb_sent)  + "\n"
 
       
 
@@ -1347,6 +1370,12 @@ class application_window():
       return sent
 
     def gramarize(self,sent):
+      anti_grammar_words = []
+      file = open('Value-json/anti_grammar.txt')
+      for lines in file.read().splitlines():
+        lines = lines.rstrip()
+        lines = lines.lstrip()
+        anti_grammar_words.append(lines)
 
       f = open('Value-json/logic_activation.json') 
       activation = json.load(f)
@@ -1358,10 +1387,22 @@ class application_window():
 
         for sent in sente:
           parser = GingerIt()
+          ani = False
+          for ani_words in anti_grammar_words:
+            if ani_words in sent:
+              ani = True
+              break
+            else:
+              continue
 
-          output = parser.parse(sent)
-          output_1 = (output.get("result"))
-          output_1 = output_1 
+              
+
+          if ani == False:
+            output = parser.parse(sent)
+            output_1 = (output.get("result"))
+            output_1 = output_1 
+          else:
+            output_1 = sent
           gram_sent.append(output_1)
 
         f_output = ' '.join(gram_sent)
