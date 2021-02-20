@@ -1550,20 +1550,51 @@ def scanfiles():
     # compound option is used to align 
     # image on LEFT side of button 
     def get_story_logic_sheet():
-        story_logic_sheet = tkinter.filedialog.askopenfilename(parent=scan_screen, initialdir=curdir,title='Please Choose Story Logic Sheet',filetypes=[('Excel File', '.xlsx'),('CSV Excel file', '.csv')])
+      check_from_test = curdir
+      check_from_story = curdir
+      if not os.path.exists(os.path.join(curdir,'google_path_info.txt')):
+        check_from_test = curdir
+        check_from_story = curdir
+      else:
+        file = open(os.path.join(curdir,'google_path_info.txt'))
+        for lines in file.read().splitlines():
+          if lines[0] == "T":
+            check_from_test = os.path.dirname(lines[1:])
+          else:
+            check_from_story = os.path.dirname(lines[1:])
+        file.close() 
+
+
+        story_logic_sheet = tkinter.filedialog.askopenfilename(parent=scan_screen, initialdir=check_from_story,title='Please Choose Story Logic Sheet',filetypes=[('Excel File', '.xlsx'),('CSV Excel file', '.csv')])
         story_logic_sheet = story_logic_sheet.rstrip()
         file1 = open("google_path_info.txt", "w")
         file1.write("L"+story_logic_sheet)
         file1.write(" \n")
         file1.close()
 
+
     def get_test_sheet():
-        test_sheet = tkinter.filedialog.askopenfilename(parent=scan_screen, initialdir=curdir,title='Please Choose Test Logic Sheet',filetypes=[('Excel File', '.xlsx'),('CSV Excel file', '.csv')])
-        test_sheet = test_sheet.rstrip()
-        file1 = open("google_path_info.txt", "a")
-        file1.write("T"+test_sheet)
-        file1.write(" \n")
-        file1.close()     
+      check_from_test = curdir
+      check_from_story = curdir
+      if not os.path.exists(os.path.join(curdir,'google_path_info.txt')):
+        check_from_test = curdir
+        check_from_story = curdir
+      else:
+        file = open(os.path.join(curdir,'google_path_info.txt'))
+        for lines in file.read().splitlines():
+          if lines[0] == "T":
+            check_from_test = os.path.dirname(lines[1:])
+          else:
+            check_from_story = os.path.dirname(lines[1:])
+        file.close() 
+
+      test_sheet = tkinter.filedialog.askopenfilename(parent=scan_screen, initialdir=check_from_test,title='Please Choose Test Logic Sheet',filetypes=[('Excel File', '.xlsx'),('CSV Excel file', '.csv')])
+      test_sheet = test_sheet.rstrip()
+      file1 = open("google_path_info.txt", "a")
+      file1.write("T"+test_sheet)
+      file1.write(" \n")
+      file1.close()     
+
     """
     Label(text="Paste Google Logic Sheet Link").pack()
     textBox=Text(scan_screen, height=2, width=40)
@@ -1587,6 +1618,8 @@ def scanfiles():
     # set image on button 
     # compound option is used to align 
     # image on LEFT side of button 
+
+
     Button(text = '    Select Story Logic Sheet', height="60", width="200",  image = photo_login, 
                         compound = LEFT, command = get_story_logic_sheet).pack() 
     
