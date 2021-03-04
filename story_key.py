@@ -240,7 +240,7 @@ class application_window():
 
             """
             total_sent = re.sub(r'\n\s*\n', '\n\n', total_sent)
-            total_sent = total_sent.replace('. ','.')
+            #total_sent = total_sent.replace('. ','.')
 
             
 
