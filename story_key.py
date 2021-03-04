@@ -241,6 +241,7 @@ class application_window():
             """
             total_sent = re.sub(r'\n\s*\n', '\n\n', total_sent)
             total_sent = total_sent.replace('. ','.')
+
             
 
 
@@ -1122,49 +1123,14 @@ class application_window():
       return sm
 
     def get_remark_sheet(self):
-      def get_standard_matrix():
-        filepath = self.story_logic_sheet
-
-        sf = StyleFrame.read_excel(filepath , read_style=True, use_openpyxl_styles=False)
-
-
-
-
-        def only_cells_with_red_text(cell):
-
-            
-            if cell.style.bg_color in {utils.colors.red, 'FFFF0000'}:
-                return 120
-        
+     
+      filepath = self.story_logic_sheet
+      df = pd.read_excel(filepath)
+      df = df.fillna(0)
+      row_remark = df['Remarks'].values
 
 
-        
-        sf_2 = StyleFrame(sf.applymap(only_cells_with_red_text))
-
-
-
-
-
-        #print(qualifying_dict)
-
-
-        sf_2.to_excel().save()
-        df = pd.read_excel(curdir+'/output.xlsx')
-
-
-        df = df.iloc[:,3]
-        #print(df)
-
-        standard_matrix = df.values
-
-
-        
-        return standard_matrix
-      
-      sm = get_standard_matrix()
-      sm = np.where(sm == 120,1,0)
-
-      return sm
+      return row_remark
                               
 
 
@@ -1263,52 +1229,53 @@ class application_window():
           else:
             
             back_category_value = self.get_category_value()
+            if self.get_category_value() in self.category_logic:
             
 
-            for key,value in data_dict.items():
-              data_dict[key] = self.get_logic_sent(str(value))
-            data_dict = self.get_dependency_logic(data_dict)
-            
-            print(data_dict)
-            keys_values = data_dict.items()
-       
+              for key,value in data_dict.items():
+                data_dict[key] = self.get_logic_sent(str(value))
+              data_dict = self.get_dependency_logic(data_dict)
+              
+              print(data_dict)
+              keys_values = data_dict.items()
+        
 
-            data_dict = {str(key): str(value) for key, value in keys_values}
-            data_dict_new = OrderedDict(natsort.natsorted(data_dict.items()))
-         
-            
-
-
-
-
-            
-            
+              data_dict = {str(key): str(value) for key, value in keys_values}
+              data_dict_new = OrderedDict(natsort.natsorted(data_dict.items()))
+          
+              
 
 
 
 
+              
+              
 
 
-            total_sent = total_sent.replace('  ',' ')
-            oberoi = (str(self.get_my_sentence(data_dict_new,clb_sent)).lstrip('\r\n')).rstrip('\r\n')
-
-            if oberoi == "":
-              pass
-            else:
-         
-              oberoi = re.sub('\n+','\n',oberoi)
-              total_sent = total_sent + str(random.choice(self.oc_choice)) + ', '+ oberoi + "\n\n"
 
 
-            print("OREO IS NOT SO GOOD")
 
-            print(total_sent)
-            print(str(random.choice(self.oc_choice)))
 
-            print(oberoi)
-            clb_sent = []
-            data_dict = {}
-    
+              total_sent = total_sent.replace('  ',' ')
+              oberoi = (str(self.get_my_sentence(data_dict_new,clb_sent)).lstrip('\r\n')).rstrip('\r\n')
+
+              if oberoi == "":
+                pass
+              else:
+          
+                oberoi = re.sub('\n+','\n',oberoi)
+                total_sent = total_sent + str(random.choice(self.oc_choice)) + ', '+ oberoi + "\n\n"
+
+
+              print("OREO IS NOT SO GOOD")
+
+              print(total_sent)
+              print(str(random.choice(self.oc_choice)))
+
+              print(oberoi)
+              clb_sent = []
+              data_dict = {}
+      
 
 
 
